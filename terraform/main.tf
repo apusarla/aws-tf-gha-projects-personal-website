@@ -52,6 +52,11 @@ output "certificate_arn" {
   value = aws_acm_certificate.krp.arn
 }
 
+data "aws_route53_zone" "krp" {
+  name         = "krp.com"
+  private_zone = false
+}
+
 ## certificate validation
 resource "aws_route53_record" "cert_validation" {
   for_each = {
