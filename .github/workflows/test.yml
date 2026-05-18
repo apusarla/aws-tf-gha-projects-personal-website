@@ -44,8 +44,8 @@ jobs:
             -auto-approve -no-color
         working-directory: ./terraform
 
-    #   - name: Log terraform outputs
-    #     run: |
-    #       echo ${{ steps.plan.outputs.stdout }}
-    #       echo ${{ steps.plan.outputs.stderr }}
-    #       echo ${{ steps.plan.outputs.exitcode }}
+      - name: upload to S3 bucket
+        run: |
+          aws s3 cp index.html s3://${{ secrets.BUCKET_NAME }}/index.html
+          aws s3 cp --recursive images s3://${{ secrets.BUCKET_NAME }}/images/
+          aws s3 cp --recursive styles s3://${{ secrets.BUCKET_NAME }}/styles/
