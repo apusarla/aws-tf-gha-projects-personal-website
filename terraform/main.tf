@@ -51,3 +51,25 @@ resource "aws_acm_certificate" "krp" {
 output "certificate_arn" {
   value = aws_acm_certificate.krp.arn
 }
+
+## certificate validation
+resource "aws_route53_record" "cert_validation" {
+  for_each = {
+    for dvo in aws_acm_certificate.krp.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      type   = dvo.resource_record_type
+      record = dvo.resource_record_value
+    }
+  }
+
+  zone_id = data.aws_route53_zone.krp.zone_id
+  name    = each.value.name
+  type    = each.value.type
+  records = [each.value.record]
+  ttl     = 60
+}
+
+resource "aws_acm_certificate_validation" "krp_cert_validation" {
+  certificate_arn         = aws_acm_certificate.krp.certificate_arn
+  validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
+}
