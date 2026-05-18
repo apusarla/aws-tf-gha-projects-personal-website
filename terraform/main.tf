@@ -75,6 +75,6 @@ resource "aws_route53_record" "cert_validation" {
 }
 
 resource "aws_acm_certificate_validation" "krp_cert_validation" {
-  certificate_arn         = aws_acm_certificate.krp.certificate_arn
+  certificate_arn         = aws_acm_certificate.krp.arn
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
