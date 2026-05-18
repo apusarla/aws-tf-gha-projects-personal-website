@@ -8,6 +8,6 @@ terraform {
     key    = "github-actions/terraform.tfstate"
     region = "eu-north-1"
     encrypt = true
-    dynamodb_table = "725740881803-tf-resources-gha-lock"
+    use_lockfile = True
   }
 }
