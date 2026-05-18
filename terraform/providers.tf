@@ -8,6 +8,6 @@ terraform {
     key    = "github-actions/terraform.tfstate"
     region = "eu-north-1"
     encrypt = true
-    use_lockfile = True
+    use_lockfile = true
   }
 }
