@@ -31,6 +31,7 @@ jobs:
       - name: terraform plan
         env:
           BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+          PERSONAL_BUCKET_NAME: ${{ secrets.PERSONAL_BUCKET_NAME }}
         run: |
           terraform plan \
            -var="bucket_name=${{ secrets.BUCKET_NAME }}"
@@ -46,6 +47,6 @@ jobs:
 
       - name: upload to S3 bucket
         run: |
-          aws s3 cp index.html s3://${{ secrets.BUCKET_NAME }}/index.html
-          aws s3 cp --recursive images s3://${{ secrets.BUCKET_NAME }}/images/
-          aws s3 cp --recursive styles s3://${{ secrets.BUCKET_NAME }}/styles/
+          aws s3 cp s3://${{ secrets.PERSONAL_BUCKET_NAME }}/index.html s3://${{ secrets.BUCKET_NAME }}/index.html
+          aws s3 cp --recursive s3://${{ secrets.PERSONAL_BUCKET_NAME }}/images/ s3://${{ secrets.BUCKET_NAME }}/images/
+          aws s3 cp --recursive s3://${{ secrets.PERSONAL_BUCKET_NAME }}/styles/ s3://${{ secrets.BUCKET_NAME }}/styles/
