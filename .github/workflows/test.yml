@@ -44,27 +44,8 @@ jobs:
             -auto-approve -no-color
         working-directory: ./terraform
 
-
-      - run: echo ${{ steps.plan.outputs.stdout }}
-      - run: echo ${{ steps.plan.outputs.stderr }}
-      - run: echo ${{ steps.plan.outputs.exitcode }}
-
-        
-
-        run: |
-          echo "Installing Terraform..."
-          curl -O https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
-          unzip terraform_1.0.0_linux_amd64.zip
-          sudo mv terraform /usr/local/bin/
-          terraform version
-
-        - name: Create S3 bucket
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-        run: |
-          echo "Creating S3 bucket in region $AWS_REGION"
-          aws s3 mb s3://${{ secrets.BUCKET_NAME }} --region $AWS_REGION
-
-
-
-
+    #   - name: Log terraform outputs
+    #     run: |
+    #       echo ${{ steps.plan.outputs.stdout }}
+    #       echo ${{ steps.plan.outputs.stderr }}
+    #       echo ${{ steps.plan.outputs.exitcode }}
