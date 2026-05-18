@@ -3,5 +3,6 @@ resource "random_id" "suffix" {
 }
 
 resource "aws_s3_bucket" "static_site_bucket" {
-  bucket = "${var.bucket_name}-${random_id.suffix.hex}"
+  bucket = "725740881803-static-site-bucket"
+  region = "eu-north-1"
 }
