@@ -1,4 +1,4 @@
-name: Listing buckets
+name: Create S3 Bucket
 
 on:
   push:
@@ -10,21 +10,60 @@ permissions:
   contents: read    # This is required for actions/checkout    
 
 jobs:
-  list-buckets:
+  create-bucket:
     runs-on: ubuntu-latest  
     steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v6
+        
       - name: Log a message
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.IAM_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: List S3 buckets
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v4
+
+      - run: terraform init
+        working-directory: ./terraform
+
+      - name: terraform plan
+        env:
+          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+        run: |
+          terraform plan \
+           -var="bucket_name=${{ secrets.BUCKET_NAME }}"
+        working-directory: ./terraform
+
+      - name: terraform apply
+        env:
+          TF_VAR_bucket_name: ${{ secrets.BUCKET_NAME }}
+        run: |
+          terraform apply \
+            -auto-approve -no-color
+        working-directory: ./terraform
+
+
+      - run: echo ${{ steps.plan.outputs.stdout }}
+      - run: echo ${{ steps.plan.outputs.stderr }}
+      - run: echo ${{ steps.plan.outputs.exitcode }}
+
+        
+
+        run: |
+          echo "Installing Terraform..."
+          curl -O https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
+          unzip terraform_1.0.0_linux_amd64.zip
+          sudo mv terraform /usr/local/bin/
+          terraform version
+
+        - name: Create S3 bucket
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
-          echo "Listing S3 buckets in region $AWS_REGION"
-          aws s3 ls
+          echo "Creating S3 bucket in region $AWS_REGION"
+          aws s3 mb s3://${{ secrets.BUCKET_NAME }} --region $AWS_REGION
 
 
 
