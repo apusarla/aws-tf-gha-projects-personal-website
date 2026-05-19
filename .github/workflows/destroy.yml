@@ -25,7 +25,7 @@ jobs:
       - name: Empty S3 bucket
         run: |
           echo "Destroying resources..."
-          aws s3 rm s3://${{ secrets.BUCKET_NAME }} --recursive
+          aws s3 rm s3://${{ secrets.BUCKET_NAME }} --recursive --ignore-errors
 
 
       - name: Install Terraform
