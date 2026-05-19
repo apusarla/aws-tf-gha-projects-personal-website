@@ -25,8 +25,10 @@ jobs:
       - name: Empty S3 bucket
         run: |
           echo "Destroying resources..."
-          aws s3 rm s3://${{ secrets.BUCKET_NAME }} --recursive --ignore-errors
-
+          echo "Destroying resources..."
+          aws s3api head-bucket --bucket "${{ secrets.BUCKET_NAME }}" 2>/dev/null \
+          && aws s3 rm s3://${{ secrets.BUCKET_NAME }} --recursive \
+          || echo "Bucket does not exist. Skipping."
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v4
